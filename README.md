@@ -84,7 +84,7 @@ cd retail-erp-system
 Install Flask:
 
 ```bash
-pip install flask
+pip install -r requirements.txt
 ```
 
 Run the application:
