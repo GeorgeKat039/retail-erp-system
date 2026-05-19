@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+{% endblock %}
+
+{% block title %}Add Category{% endblock %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <!-- ADD CATEGORY FORM -->
+    <div class="form-card">
+        <h2>Add Category</h2>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>Category Name</label>
+                <input type="text"
+                       name="category_name"
+                       placeholder="Enter new category"
+                       required>
+            </div>
+
+            <button type="submit" class="btn">
+                Add Category
+            </button>
+        </form>
+    </div>
+
+    <!-- EXISTING CATEGORIES -->
+    <div class="table-container">
+
+        <h2>Existing Categories</h2>
+        <table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Products</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>{{ category["category_name"] }}</td>
+                    <td><span class="category-badge">{{ category["product_count"] }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

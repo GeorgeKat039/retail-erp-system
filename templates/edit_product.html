@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="form-container">
+    <div class="form-box">
+
+        <h2>Edit Product</h2>
+
+        <form method="post">
+
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" name="product_name" value="{{ product['product_name'] }}">
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category">
+                    <option value="Μαναβική" {% if product['product_category']=="Μαναβική" %}selected{% endif %}>Μαναβική</option>
+                    <option value="Κρέας" {% if product['product_category']=="Κρέας" %}selected{% endif %}>Κρέας</option>
+                    <option value="Γάλατα & Γιαούρτια" {% if product['product_category']=="Γάλατα & Γιαούρτια" %}selected{% endif %}>Γάλατα & Γιαούρτια</option>
+                    <option value="Ξηρό Φορτίο" {% if product['product_category']=="Ξηρό Φορτίο" %}selected{% endif %}>Ξηρό Φορτίο</option>
+                    <option value="Απορρυπαντικά & Καθαριστικά" {% if product['product_category']=="Απορρυπαντικά & Καθαριστικά" %}selected{% endif %}>Απορρυπαντικά & Καθαριστικά</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Unit</label>
+                <select name="unit">
+                    <option value="kg" {% if product['product_unit']=="kg" %}selected{% endif %}>kg</option>
+                    <option value="pcs" {% if product['product_unit']=="pcs" %}selected{% endif %}>pcs</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Stock</label>
+                <input type="number" name="quantity" value="{{ product['quantity'] }}">
+            </div>
+
+            <button type="submit" class="btn">Update Product</button>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

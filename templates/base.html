@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+    <link rel="stylesheet" href="{{ url_for('static',  filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',  filename='forms.css') }}">
+    {% block extra_css %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+<body>
+ <!-- HEADER -->
+<div class="background">
+    <h2 class="title" id="first">Supermarket Store Management System</h2>
+</div>
+
+ <!-- NAVBAR -->
+    <div class="navbar">
+            <a href="{{ url_for('home') }}"
+               class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a>
+
+                {% if "user" in session %}
+
+                    <!-- WAREHOUSE USER -->
+                    {% if session["role"] == "warehouse" %}
+                        <a href="{{ url_for('products') }}"
+                           class="{% if request.endpoint == 'products' %}active{% endif %}">Products</a>
+
+                        <a href="{{ url_for('logout') }}">Logout</a>
+
+
+                    <!-- STORE USERS -->
+                    {% else %}
+                        <a href="{{ url_for('dashboard') }}"
+                           class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Control Panel</a>
+
+                        <a href="{{ url_for('orders') }}" class="{% if request.endpoint == 'orders' %}active{% endif %}">Orders</a>
+
+                        <a href="{{ url_for('logout') }}">Logout</a>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <a href="{{ url_for('login') }}">
+                        Login
+                    </a>
+
+                {% endif %}
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!--FOOTER-->
+    <footer class="footer">
+        <div class="footer-container">
+
+            <div class="footer-col">
+                <h3>ERP System</h3>
+                <p>📞 (+30) 69X XXX XXXX</p>
+                <p>📍 Αθήνα - Ακροπόλεως 51</p>
+            </div>
+
+            <div class="footer-col">
+                <h3>Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('static', filename='documents/erp_system.pdf')}}" target="_blank">ERP System</a></li>
+                    <li><a href="{{ url_for('static', filename='documents/privacy_policy.pdf')}}" target="_blank">Πολιτική Απορρήτου</a></li>
+                    <li><a href="{{ url_for('static', filename='documents/returns_policy.pdf')}}" target="_blank">Επιστροφές Προϊόντων</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Modules</h3>
+                <ul>
+                    <li onclick="openModal('warehouse')">Αποθήκη</li>
+                    <li onclick="openModal('store')">Κατάστημα</li>
+                    <li onclick="openModal('orders')">Παραγγελία</li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Subscribe</h3>
+                <div class="newsletter">
+                    <input type="email" placeholder="Email">
+                    <button>OK</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>
+                © 2026 Supermarket ERP System |
+                Developed & Deployed by George Katopodis
+            </p>
+        </div>
+    </footer>
+
+    <!-- POP UP MODAL -->
+    <div id="module-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn"
+                  onclick="closeModal()">
+                &times;
+            </span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-text"></p>
+        </div>
+    </div>
+{% block scripts %}
+ <script>
+function openModal(module){
+
+    const modal = document.getElementById("module-modal");
+    const title = document.getElementById("modal-title");
+    const text = document.getElementById("modal-text");
+
+    // WAREHOUSE
+
+    if(module === "warehouse"){
+        title.textContent = "Warehouse Module";
+        text.textContent =
+        "Το module αποθήκης χρησιμοποιείται για τη διαχείριση αποθεμάτων, προϊόντων και παραλαβών.";
+    }
+
+
+    // STORE
+    if(module === "store"){
+        title.textContent = "Store Module";
+        text.textContent =
+        "Το module καταστήματος επιτρέπει τη δημιουργία και παρακολούθηση παραγγελιών.";
+    }
+
+
+    // ORDERS
+    if(module === "orders"){
+        title.textContent = "Orders Module";
+        text.textContent =
+        "Το module παραγγελιών διαχειρίζεται τη δημιουργία, έγκριση και ιστορικό παραγγελιών.";
+    }
+
+    modal.style.display = "block";
+}
+
+
+// CLOSE MODAL
+function closeModal(){
+    document.getElementById("module-modal")
+            .style.display = "none";
+}
+
+
+// CLOSE WHEN CLICK OUTSIDE
+window.onclick = function(event){
+    const modal = document.getElementById("module-modal");
+    if(event.target == modal){
+
+        modal.style.display = "none";
+    }
+}
+
+ // AUTO HIDE FLASH MESSAGES
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    setTimeout(function () {
+
+        const flashMessages =
+            document.querySelectorAll(".flash-message");
+
+        flashMessages.forEach(message => {
+
+            message.style.opacity = "0";
+
+            setTimeout(() => {
+
+                message.remove();
+
+            }, 500);
+
+        });
+
+    }, 3000);
+
+});
+</script>
+
+ {% endblock %}
+</body>
+</html>

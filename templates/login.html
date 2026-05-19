@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static',filename='login.css') }}">
+{% endblock %}
+
+{% block title %}LOGIN PAGE{% endblock %}
+
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-card">
+        <h1>Supermarket ERP</h1>
+
+        <p class="login-subtitle">
+            Warehouse & Store Management Platform
+        </p>
+
+        <form method="post"
+              action="{{ url_for('login') }}">
+
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text"
+                       name="username"
+                       placeholder="Enter your username"
+                       required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password"
+                       name="password"
+                       placeholder="Enter your password"
+                       required>
+            </div>
+
+            <button type="submit"
+                    class="login-btn">
+                Login
+            </button>
+
+        </form>
+
+        {% if message %}
+            <p class="login-message">
+                {{ message }}
+            </p>
+        {% endif %}
+
+    </div>
+
+
+    <!-- FEATURES -->
+
+    <div class="feature-boxes">
+        <div class="feature-card">
+            <h3>Inventory Tracking</h3>
+
+            <p>
+                Παρακολούθηση αποθέματος
+                και ειδοποιήσεις χαμηλού stock.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+            <h3>Orders Management</h3>
+
+            <p>
+                Δημιουργία, έγκριση και
+                παρακολούθηση παραγγελιών.
+            </p>
+
+        </div>
+
+        <div class="feature-card">
+            <h3>Analytics Dashboard</h3>
+
+            <p>
+                Προβολή στατιστικών
+                και αναφορών δραστηριότητας.
+            </p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

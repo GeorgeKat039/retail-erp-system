@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='dashboard.css') }}">
+{% endblock %}
+
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Order History</h1>
+        <p>
+            All store orders
+        </p>
+    </div>
+
+    <div class="recent-orders">
+        <table class="orders-table">
+            <thead>
+                <tr>
+
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>
+                        #{{ order['order_id'] }}
+                    </td>
+
+                    <td>
+                        {{ order['order_date'][:16] }}
+                    </td>
+
+                    <td>
+                        € {{ order['total'] }}
+                    </td>
+
+                    <td>
+                        <span class="
+                            status-badge
+                            {{ order['order_status']|lower }}
+                        ">
+                            {{ order['order_status'] }}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <a href="{{ url_for('order_details',
+                         order_id=order['order_id']) }}"
+                        class="details-btn">
+                            View Details
+                        </a>
+
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

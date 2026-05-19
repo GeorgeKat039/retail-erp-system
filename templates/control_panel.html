@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='dashboard.css') }}">
+{% endblock %}
+
+{% block title %}Control Panel{% endblock %}
+
+
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- PAGE TITLE -->
+    <div class="dashboard-header">
+        <div class="dashboard-top">
+
+            <div>
+                <h1>Store Dashboard</h1>
+                <p>Welcome {{ session["user"] }}</p>
+            </div>
+
+            <div class="store-badge">
+                📍 {{ store_name }}
+            </div>
+
+        </div>
+    </div>
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+
+        <!-- CARD 1 -->
+        <div class="kpi-card">
+            <h3>Total Orders</h3>
+
+            <p class="kpi-number">
+                {{ total_orders }}
+            </p>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="kpi-card">
+            <h3>Monthly Value</h3>
+
+            <p class="kpi-number">
+                € {{ monthly_value }}
+            </p>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="kpi-card">
+            <h3>Pending Orders</h3>
+
+            <p class="kpi-number pending">
+                {{ pending_orders }}
+            </p>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="kpi-card">
+            <h3>Last Order</h3>
+
+            <p class="kpi-small">
+                {% if last_order %}
+                     {{ last_order['order_date'][:16] }}
+                {% else %}
+                    No orders yet
+                {% endif %}
+            </p>
+
+            <span class="status-badge submitted">
+                {% if last_order %}
+                    {{ last_order['order_status'][:16] }}
+                {% endif %}
+            </span>
+        </div>
+
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+
+        <a href="{{ url_for('orders') }}"
+           class="action-btn">
+            Create Order
+        </a>
+
+        <a href="{{ url_for('order_history') }}"
+           class="action-btn">
+            Order History
+        </a>
+
+        <a href="{{ url_for('export_orders_csv') }}"
+            class="action-btn export-btn">
+            Export CSV
+
+        </a>
+
+    </div>
+
+    <!-- RECENT ORDERS -->
+    <div class="orders-section">
+
+        <h2>Recent Orders</h2>
+
+        <table class="dashboard-table">
+
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for order in recent_orders %}
+                <tr>
+                    <td>
+                        {{ order['order_date'][:16] }}
+                    </td>
+
+                    <td>
+                        {{ session['user'] }}
+                    </td>
+
+                    <td>
+                        € {{ order['total'] }}
+                    </td>
+
+                    <td>
+                        <span class="
+                            status-badge
+                            {{ order['order_status']|lower }}
+                        ">
+                            {{ order['order_status'] }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if order['order_status'] == 'Pending'
+                           and session['role'] == 'manager' %}
+
+                            <a href="{{ url_for('approve_order',
+                                                 order_id=order['order_id']) }}"
+                               class="submit-btn">
+                                Submit
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+{% endblock %}
+
+

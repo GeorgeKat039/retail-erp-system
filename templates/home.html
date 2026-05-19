@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Supermarket ERP{% endblock %}
+
+<!-- BEGIN MAIN CONTENT OF THE PAGE-->
+{% block content %}
+
+<main class="container">
+
+    <div class="box">
+        <img src="{{ url_for('static', filename='images/hqs.png') }}">
+        <h2>ERP Σύστημα</h2>
+        <p class="description">
+        Ένα σύγχρονο ERP σύστημα που σας δίνει πλήρη εικόνα της επιχείρησης.
+            Διαχειριστείτε προσωπικό, αποθέματα και παραγγελίες από ένα σημείο.
+        </p>
+    </div>
+
+    <div class="box">
+        <img src="{{ url_for('static', filename='images/warehousecorridor.png') }}">
+        <h2>Αποθήκη & Παραγγελίες</h2>
+        <p class="description">
+        Διαχειριστείτε τις παραγγελίες σας και παρακολουθήστε την αποθήκη σε πραγματικό χρόνο.
+            Ελέγξτε τα αποθέματα, δημιουργήστε νέες παραγγελίες και εξασφαλίστε την ομαλή λειτουργία του καταστήματος.
+        </p>
+    </div>
+
+    <div class="box">
+        <img src="{{ url_for('static', filename='images/hr.png') }}">
+        <h2>Διαχείριση Προσωπικού</h2>
+        <p class="description">
+        Διαχειριστείτε και προβάλετε πληροφορίες για το προσωπικό του καταστήματος.
+                    Παρακολουθήστε στοιχεία εργαζομένων, ρόλους και βασικά δεδομένα για καλύτερη οργάνωση και λήψη αποφάσεων.
+        </p>
+    </div>
+
+</main>
+
+{% endblock %}
+
