@@ -93,7 +93,25 @@ Run the application:
 python app.py
 ```
 
----
+## Database
+
+The project uses SQLite database (`supermarket.db`) included in the repository.
+
+Sample data is already preloaded:
+- products
+- categories
+- warehouse stock
+- users
+- stores
+
+Default local URL:
+http://127.0.0.1:5000
+
+## Future Improvements
+
+- Employee Management Module
+- Store Employee Leave Tracking
+- Dashboard Analytics
 
 ## Future Improvements
 
