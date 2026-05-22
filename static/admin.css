@@ -64,6 +64,8 @@
     text-decoration: none;
     transition: 0.3s;
     font-weight: bold;
+    display: inline-block;
+    margin-bottom: 25px;
 }
 
 .admin-btn:hover{
@@ -137,4 +139,45 @@
 
 .enable-btn:hover{
     background-color: #1f7f35;
+}
+
+.admin-form{
+    width: 60%;
+    margin: auto;
+}
+
+.form-group{
+    margin-bottom: 20px;
+}
+
+.form-group input,
+.form-group select{
+
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.back-btn{
+    background-color: #6c757d;
+    margin-left: 10px;
+}
+
+.back-btn:hover{
+    background-color: #5a6268;
+}
+
+.admin-form-buttons{
+    margin-top: 25px;
+}
+
+.back-btn{
+    background-color: #6c757d;
+    margin-left: 10px;
+}
+
+.back-btn:hover{
+    background-color: #5a6268;
 }

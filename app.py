@@ -211,8 +211,6 @@ def disable_user(user_id):
     flash("User disabled successfully", "success")
     return redirect(url_for("manage_users"))
 
-
-
 #enable user
 @app.route("/admin/enable_user/<int:user_id>")
 def enable_user(user_id):
@@ -239,6 +237,57 @@ def enable_user(user_id):
     flash("User enabled successfully", "success")
 
     return redirect(url_for("manage_users"))
+
+#add user
+@app.route("/admin/add_user", methods=["GET", "POST"])
+def add_user():
+
+    #admin only
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    if session.get("role") != "admin":
+        return redirect(url_for("home"))
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    #get stores for dropdown
+    cursor.execute("SELECT * FROM stores")
+    stores = cursor.fetchall()
+
+    #submit form
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+        role = request.form["role"]
+        store_id = request.form["store_id"]
+
+        #hash password
+        hashed_password = generate_password_hash(password)
+
+        #insert user
+        cursor.execute("""
+            INSERT INTO users
+            (username, password, role, store_id, is_active)
+            VALUES (?, ?, ?, ?, 1)
+        """, (username, hashed_password, role, store_id))
+
+        connection.commit()
+        connection.close()
+
+        flash("User added successfully!", "success")
+        return redirect(url_for("manage_users"))
+
+    connection.close()
+
+    return render_template(
+        "add_user.html",
+        stores=stores
+    )
 
 
 #control panel
