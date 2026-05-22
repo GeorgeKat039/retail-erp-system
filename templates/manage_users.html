@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="admin-container">
+    <h1 class="admin-title">User Management</h1>
+
+    <table class="users-table">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Store</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+
+            <tr>
+                <td>{{ user.user_id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.store_id }}</td>
+                <td>
+
+                    {% if user.is_active == 1 %}
+                        <span class="active-badge">Active</span>
+                    {% else %}
+                        <span class="inactive-badge">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+
+                    {% if user.is_active == 1 %}
+                        <a href="{{ url_for('disable_user', user_id=user.user_id) }}"
+                           class="disable-btn">
+                           Disable
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('enable_user', user_id=user.user_id) }}"
+                           class="enable-btn">
+                           Enable
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

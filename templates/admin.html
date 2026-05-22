@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static',filename='admin.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<div class="admin-container">
+    <h1 class="admin-title">Admin Dashboard</h1>
+
+    <div class="admin-cards">
+
+        <div class="admin-card">
+            <h3>Total Users</h3>
+            <div class="admin-number">{{ total_users }}</div>
+        </div>
+
+        <div class="admin-card">
+            <h3>Total Products</h3>
+            <div class="admin-number">{{ total_products }}</div>
+        </div>
+
+        <div class="admin-card">
+            <h3>Low Stock Products</h3>
+            <div class="admin-number">{{ low_stock }}</div>
+        </div>
+
+        <div class="admin-card">
+            <h3>Total Stores</h3>
+            <div class="admin-number">{{ total_stores }}</div>
+        </div>
+
+    </div>
+
+    <div class="admin-actions">
+        <h2>Admin Actions</h2>
+
+        <div class="admin-buttons">
+            <a href="{{ url_for('manage_users') }}" class="admin-btn">Manage Users</a>
+            <a href="#" class="admin-btn">Stock Thresholds</a>
+            <a href="#" class="admin-btn">Employee Management</a>
+            <a href="#" class="admin-btn">Warehouse Overview</a>
+            <a href="#" class="admin-btn">Reports</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

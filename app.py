@@ -76,22 +76,170 @@ def login():
         #close connection to db
         connection.close()
 
-        if user and check_password_hash(user["password"], password):
+        if user and user["is_active"] == 1 and check_password_hash(user["password"], password):
             session["user"] = username   #ποιος έκανε login
             session["role"] = user["role"] #manager / assistant
             session["store_id"] = user["store_id"] #store_id
 
+            #admin role
+            if user["role"] == "admin":
+                flash("Welcome to the Admin Panel", "success")
+                return redirect(url_for("admin_panel"))
+
             #warehouse role
-            if user["role"] == "warehouse":
+            elif user["role"] == "warehouse":
                 flash("Welcome to Central Warehouse Management", "success")
                 return redirect(url_for("products"))
 
             #manager / assistant manager role
-            return redirect(url_for("dashboard"))
+            elif user["role"] == "manager" or user["role"] == "assistant_manager":
+                flash("Welcome to the Manager Panel", "success")
+                return redirect(url_for("dashboard"))
         else:
             message = "Login Unsuccessful. Please check username and password"
 
     return render_template("login.html", message=message)
+
+
+
+#admin login
+@app.route("/admin")
+def admin_panel():
+
+    #user must be logged in
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    #check if user is admin
+    if session.get("role") != "admin":
+        flash("You do not have permission to access the admin panel", "error")
+        return redirect(url_for("home"))
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    #total users
+    cursor.execute("SELECT COUNT(*) FROM users")
+    total_users = cursor.fetchone()[0]
+
+    # total products
+    cursor.execute("SELECT COUNT(*) FROM products")
+    total_products = cursor.fetchone()[0]
+
+    # total stores
+    cursor.execute("SELECT COUNT(*) FROM stores")
+    total_stores = cursor.fetchone()[0]
+
+    # low stock products
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM warehouse_stock
+        WHERE quantity < 300
+    """)
+
+    low_stock = cursor.fetchone()[0]
+
+    connection.close()
+
+    return render_template(
+        "admin.html",
+        total_users=total_users,
+        total_products=total_products,
+        total_stores=total_stores,
+        low_stock=low_stock
+    )
+
+#admin users
+@app.route("/admin/users")
+def manage_users():
+
+    # check login
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    # admin only
+    if session.get("role") != "admin":
+        flash("Access denied", "error")
+        return redirect(url_for("home"))
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT
+            user_id,
+            username,
+            role,
+            store_id,
+            is_active
+        FROM users
+        ORDER BY role
+    """)
+
+    users = cursor.fetchall()
+    connection.close()
+
+    return render_template("manage_users.html", users=users)
+
+#disable user
+@app.route("/admin/disable_user/<int:user_id>")
+def disable_user(user_id):
+
+    # admin only
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    if session.get("role") != "admin":
+        return redirect(url_for("home"))
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        UPDATE users
+        SET is_active = 0
+        WHERE user_id = ?
+    """, (user_id,))
+
+    connection.commit()
+    connection.close()
+
+    flash("User disabled successfully", "success")
+    return redirect(url_for("manage_users"))
+
+
+
+#enable user
+@app.route("/admin/enable_user/<int:user_id>")
+def enable_user(user_id):
+
+    # admin only
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    if session.get("role") != "admin":
+        return redirect(url_for("home"))
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        UPDATE users
+        SET is_active = 1
+        WHERE user_id = ?
+    """, (user_id,))
+
+    connection.commit()
+    connection.close()
+
+    flash("User enabled successfully", "success")
+
+    return redirect(url_for("manage_users"))
+
 
 #control panel
 @app.route("/dashboard")
