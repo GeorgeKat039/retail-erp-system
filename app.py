@@ -5,10 +5,14 @@ import sqlite3
 import csv
 from pathlib import Path
 from datetime import datetime
+
+from dotenv import load_dotenv
+import os
 #===========================================================================
 
+load_dotenv()
 app = Flask(__name__)
-app.secret_key = "mysecretkey"
+app.secret_key = os.getenv("SECRET_KEY")
 
 #database path
 BASE_DIR = Path(__file__).resolve().parent
@@ -289,6 +293,70 @@ def add_user():
         stores=stores
     )
 
+
+#edit user
+@app.route("/admin/edit_user/<int:user_id>", methods=["GET", "POST"])
+def edit_user(user_id):
+
+    #admin only
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    if session.get("role") != "admin":
+        return redirect(url_for("home"))
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+
+    #get selected user
+    cursor.execute("""
+        SELECT *
+        FROM users
+        WHERE user_id = ?
+    """, (user_id,))
+
+    user = cursor.fetchone()
+
+    #get stores
+    cursor.execute("""
+        SELECT *
+        FROM stores
+    """)
+
+    stores = cursor.fetchall()
+
+    #update form
+    if request.method == "POST":
+
+        username = request.form["username"]
+        role = request.form["role"]
+        store_id = request.form["store_id"]
+
+        cursor.execute("""
+            UPDATE users
+            SET
+                username = ?,
+                role = ?,
+                store_id = ?
+            WHERE user_id = ?
+        """, (username, role, store_id, user_id))
+
+        connection.commit()
+        connection.close()
+
+        flash("User updated successfully", "success")
+
+        return redirect(url_for("manage_users"))
+
+    connection.close()
+
+    return render_template(
+        "edit_user.html",
+        user=user,
+        stores=stores
+    )
 
 #control panel
 @app.route("/dashboard")
