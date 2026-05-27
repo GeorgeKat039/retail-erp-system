@@ -1,0 +1,49 @@
+.threshold-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.threshold-table th,
+.threshold-table td {
+    padding: 18px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.threshold-table th {
+    background-color: #2f4a67;
+    color: white;
+}
+
+.threshold-table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.threshold-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* low stock row */
+.low-stock-row {
+    background-color: #ffe5e5;
+    color: #c0392b;
+    font-weight: bold;
+}
+
+/* badges */
+.low-badge {
+    background-color: #e74c3c;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.ok-badge {
+    background-color: #27ae60;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}

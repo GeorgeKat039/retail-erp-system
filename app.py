@@ -139,8 +139,12 @@ def admin_panel():
     # low stock products
     cursor.execute("""
         SELECT COUNT(*)
-        FROM warehouse_stock
-        WHERE quantity < 300
+        FROM products p
+        JOIN warehouse_stock w
+            ON p.product_id = w.product_id
+        WHERE p.threshold > 0
+          AND w.quantity < p.threshold
+          AND w.quantity > 0
     """)
 
     low_stock = cursor.fetchone()[0]
@@ -356,6 +360,32 @@ def edit_user(user_id):
         "edit_user.html",
         user=user,
         stores=stores
+    )
+
+
+#admin product thresholds
+@app.route("/admin/thresholds")
+def stock_thresholds():
+
+    connection = get_db_connection()
+
+    products = connection.execute("""
+        SELECT
+            p.product_id,
+            p.product_name,
+            p.threshold,
+            w.quantity
+        FROM products p
+        JOIN warehouse_stock w
+            ON p.product_id = w.product_id
+        ORDER BY p.product_name
+    """).fetchall()
+
+    connection.close()
+
+    return render_template(
+        "stock_thresholds.html",
+        products=products
     )
 
 #control panel
@@ -644,6 +674,7 @@ def products():
         p.product_unit,
         p.product_price,
         p.is_active,
+        p.threshold,
         w.quantity
     FROM products p
     JOIN warehouse_stock w
@@ -742,12 +773,13 @@ def edit_product(product_id):
         category = request.form["category"]
         unit = request.form["unit"]
         quantity = request.form["quantity"]
+        threshold = request.form["threshold"]
 
         conn.execute("""
             UPDATE products
-            SET product_name=?, product_category=?, product_unit=?
+            SET product_name=?, product_category=?, product_unit=?, threshold=?
             WHERE product_id=?
-        """, (product_name, category, unit, product_id))
+        """, (product_name, category, unit, threshold, product_id))
 
         conn.execute("""
             UPDATE warehouse_stock

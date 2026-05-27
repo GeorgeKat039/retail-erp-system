@@ -65,10 +65,11 @@
 
                     {% set out_stock = product["quantity"] <= 0%}
 
-                    {% set low =
-                        (product["product_unit"] == "kg" and product["quantity"] < 300 and product["quantity"] > 0) or
-                        (product["product_unit"] == "pcs" and product["quantity"] < 500 and product["quantity"] > 0)
-                     %}
+                        {% set low =
+                            product["threshold"] > 0 and
+                            product["quantity"] < product["threshold"] and
+                            product["quantity"] > 0
+                        %}
 
                     <tr class="
                         {% if low %}low-stock{% endif %}
