@@ -659,7 +659,7 @@ def products():
     #security check
     if session.get("role") != "warehouse":
         flash("You do not have permission to access this page")
-        return redirect(url_for("control_panel"))
+        return redirect(url_for("dashboard"))
 
     # get values from URL
     search = request.args.get("search")
